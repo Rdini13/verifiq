@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 60" width="300" height="60">
+  <g transform="translate(2, 9)">
+    <!-- Linhas conectando os nós (checkmark geométrico — mesma linguagem DINI) -->
+    <line x1="6" y1="26" x2="19" y2="39" stroke="#00C896" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="19" y1="39" x2="42" y2="8" stroke="#00C896" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- 3 nós circulares -->
+    <circle cx="6"  cy="26" r="4" fill="#00C896"/>
+    <circle cx="19" cy="39" r="4" fill="#00C896"/>
+    <circle cx="42" cy="8"  r="4" fill="#00C896"/>
+  </g>
+  <!-- VERIFIQ wordmark -->
+  <text x="60" y="36" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="3" fill="#FFFFFF">VERIFIQ</text>
+  <!-- "by Dini Inc." -->
+  <text x="61" y="52" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="400" font-size="9.5" letter-spacing="0.5" fill="#8A9BB5">by Dini Inc.</text>
+</svg>

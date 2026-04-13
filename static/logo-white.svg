@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" width="280" height="60">
+  <!-- Shield icon with checkmark -->
+  <g transform="translate(0, 10)">
+    <!-- Shield shape -->
+    <path d="M20 2 L2 8 L2 22 C2 32 10 40 20 43 C30 40 38 32 38 22 L38 8 Z" fill="#00C896" opacity="0.15"/>
+    <path d="M20 2 L2 8 L2 22 C2 32 10 40 20 43 C30 40 38 32 38 22 L38 8 Z" fill="none" stroke="#00C896" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Checkmark inside shield -->
+    <polyline points="11,22 17,29 29,15" fill="none" stroke="#00C896" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- VERIFIQ wordmark (dark for light backgrounds) -->
+  <text x="50" y="36" font-family="'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="26" letter-spacing="3" fill="#0A1628">VERIFIQ</text>
+  <!-- "by Dini Inc." subtle badge -->
+  <text x="51" y="52" font-family="'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="400" font-size="9.5" letter-spacing="0.5" fill="#5A7A9A">by Dini Inc.</text>
+</svg>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifiq by Dini Inc. — Inteligência de Dados para o Brasil</title>
+  <meta name="description" content="A plataforma de enriquecimento de dados mais completa do Brasil. Localize, verifique e enriqueça cadastros via API em milissegundos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ====================== RESET & BASE ====================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0A1628;
+      --navy-deep: #060E1A;
+      --card: #0F1D2E;
+      --card-hover: #132338;
+      --border: #1A2E47;
+      --border-bright: #243D5C;
+      --green: #00C896;
+      --green-dim: rgba(0, 200, 150, 0.12);
+      --green-glow: rgba(0, 200, 150, 0.25);
+      --white: #FFFFFF;
+      --gray: #7A8FA8;
+      --gray-light: #A8BCCF;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background-color: var(--navy);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display: block; }
+
+    /* ====================== UTILITIES ====================== */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 96px 0; }
+    .section-sm { padding: 60px 0; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-dim); border: 1px solid rgba(0,200,150,0.3);
+      color: var(--green); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 100px;
+    }
+    .tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+      line-height: 1.15; color: var(--white);
+    }
+    .section-sub { font-size: 17px; color: var(--gray); margin-top: 14px; max-width: 560px; }
+
+    /* ====================== BUTTONS ====================== */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font); font-size: 15px; font-weight: 600;
+      padding: 13px 26px; border-radius: 10px; cursor: pointer;
+      border: none; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .btn-green {
+      background: var(--green); color: var(--navy);
+      box-shadow: 0 0 20px rgba(0,200,150,0.3);
+    }
+    .btn-green:hover { background: #00dfa8; box-shadow: 0 0 30px rgba(0,200,150,0.5); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      border: 1.5px solid var(--border-bright);
+    }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+    .btn-sm { font-size: 13px; padding: 9px 18px; border-radius: 8px; }
+
+    /* ====================== NAV ====================== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10,22,40,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    .nav-logo { display: flex; align-items: center; }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--gray-light);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+
+    /* ====================== HERO ====================== */
+    #hero {
+      padding: 160px 0 100px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,200,150,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 30%, rgba(0,200,150,0.05) 0%, transparent 60%);
+    }
+    /* Grid lines effect */
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(26,46,71,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,46,71,0.5) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 80%);
+    }
+    .hero-content { position: relative; text-align: center; max-width: 800px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-dim); border: 1px solid rgba(0,200,150,0.25);
+      border-radius: 100px; padding: 8px 18px; margin-bottom: 32px;
+      font-size: 13px; font-weight: 500; color: var(--green);
+    }
+    .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; flex-shrink: 0; }
+    .hero-badge-sep { width: 1px; height: 14px; background: rgba(0,200,150,0.3); margin: 0 4px; }
+    h1 {
+      font-size: clamp(38px, 6vw, 68px); font-weight: 800;
+      line-height: 1.08; letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #FFFFFF 0%, #C8D8E8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 19px); color: var(--gray);
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.65;
+    }
+    .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+    .hero-trust {
+      font-size: 12px; color: var(--gray);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .hero-trust-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border-bright); }
+
+    /* ====================== STATS BAR ====================== */
+    .stats-bar {
+      background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+    .stats-inner {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 36px 20px; position: relative;
+    }
+    .stat-item + .stat-item::before {
+      content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+      width: 1px; background: var(--border);
+    }
+    .stat-number {
+      font-size: clamp(28px, 4vw, 40px); font-weight: 800;
+      color: var(--green); letter-spacing: -0.02em; line-height: 1;
+    }
+    .stat-label { font-size: 13px; color: var(--gray); margin-top: 6px; font-weight: 500; }
+    @media (max-width: 640px) {
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(3)::before { display: none; }
+    }
+
+    /* ====================== PRODUTOS ====================== */
+    .products-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      margin-top: 56px;
+    }
+    @media (max-width: 900px) { .products-grid { grid-template-columns: 1fr; } }
+    .product-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; position: relative;
+      transition: all 0.25s ease; overflow: hidden;
+    }
+    .product-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, var(--green), transparent);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .product-card:hover { border-color: var(--border-bright); background: var(--card-hover); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+    .product-card:hover::before { opacity: 1; }
+    .product-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--green-dim); border: 1px solid rgba(0,200,150,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .product-name { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); margin-bottom: 8px; }
+    .product-title { font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 14px; }
+    .product-desc { font-size: 14px; color: var(--gray); line-height: 1.65; margin-bottom: 24px; }
+    .product-price {
+      display: inline-block; background: rgba(0,200,150,0.08);
+      border: 1px solid rgba(0,200,150,0.2); border-radius: 6px;
+      font-size: 12px; font-weight: 600; color: var(--green);
+      padding: 4px 10px; margin-bottom: 16px;
+    }
+    .product-endpoint {
+      font-family: var(--mono); font-size: 12px; color: var(--gray);
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+      border-radius: 6px; padding: 8px 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .endpoint-method {
+      font-size: 10px; font-weight: 700; background: var(--green-dim);
+      color: var(--green); border-radius: 4px; padding: 2px 6px;
+    }
+
+    /* ====================== COMO FUNCIONA ====================== */
+    #como-funciona { background: var(--navy-deep); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+      margin-top: 56px; position: relative;
+    }
+    .steps-grid::before {
+      content: ''; position: absolute; top: 32px; left: calc(16.66% + 20px); right: calc(16.66% + 20px);
+      height: 1px; background: linear-gradient(90deg, var(--green), rgba(0,200,150,0.3) 50%, var(--green));
+      z-index: 0;
+    }
+    @media (max-width: 768px) {
+      .steps-grid { grid-template-columns: 1fr; }
+      .steps-grid::before { display: none; }
+    }
+    .step-item { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 24px; position: relative; z-index: 1; }
+    .step-num {
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 2px solid var(--green); background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 800; color: var(--green);
+      margin-bottom: 24px; box-shadow: 0 0 0 8px var(--navy);
+    }
+    .step-title { font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+    .step-desc { font-size: 14px; color: var(--gray); line-height: 1.65; }
+
+    /* ====================== CODE EXAMPLE ====================== */
+    .code-section { padding: 96px 0; }
+    .code-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 56px; align-items: start;
+    }
+    @media (max-width: 900px) { .code-grid { grid-template-columns: 1fr; } }
+    .code-block {
+      background: #050D18; border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-dots { display: flex; gap: 6px; }
+    .code-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .code-dot-r { background: #FF5F56; }
+    .code-dot-y { background: #FFBD2E; }
+    .code-dot-g { background: #27C93F; }
+    .code-label { font-size: 11px; font-weight: 600; color: var(--gray); font-family: var(--mono); letter-spacing: 0.05em; }
+    .code-copy {
+      font-size: 11px; color: var(--gray); cursor: pointer;
+      padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border);
+      background: transparent; font-family: var(--font); transition: all 0.2s;
+    }
+    .code-copy:hover { color: var(--green); border-color: var(--green); }
+    .code-body { padding: 22px; overflow-x: auto; }
+    pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; }
+    .t-cmd { color: #7DCEA0; }
+    .t-flag { color: #85C1E9; }
+    .t-url { color: #F8F9FA; }
+    .t-string { color: #A9DFBF; }
+    .t-key { color: #85C1E9; }
+    .t-val { color: #A9DFBF; }
+    .t-bool { color: #00C896; }
+    .t-num { color: #F39C12; }
+    .t-comment { color: #5D6D7E; }
+    .t-brace { color: #F8F9FA; }
+    .t-punct { color: #7FB3D3; }
+
+    /* ====================== PREÇOS ====================== */
+    #precos { background: var(--navy-deep); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      margin-top: 56px; align-items: start;
+    }
+    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
+    .plan-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; position: relative;
+    }
+    .plan-card.featured {
+      border-color: var(--green); background: linear-gradient(145deg, rgba(0,200,150,0.06), var(--card));
+      box-shadow: 0 0 0 1px rgba(0,200,150,0.2), 0 24px 60px rgba(0,200,150,0.1);
+    }
+    .plan-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--green); color: var(--navy); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 14px; border-radius: 100px;
+    }
+    .plan-name { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); margin-bottom: 16px; }
+    .plan-price {
+      font-size: 40px; font-weight: 800; color: var(--white); line-height: 1;
+      margin-bottom: 6px;
+    }
+    .plan-price span { font-size: 16px; font-weight: 500; color: var(--gray); }
+    .plan-desc { font-size: 13px; color: var(--gray); margin-bottom: 28px; }
+    .plan-features { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .plan-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--gray-light);
+    }
+    .plan-features li::before {
+      content: ''; width: 16px; height: 16px; border-radius: 50%;
+      background: var(--green-dim); border: 1px solid rgba(0,200,150,0.3);
+      flex-shrink: 0; margin-top: 2px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpolyline points='3,8 6.5,11.5 13,4.5' fill='none' stroke='%2300C896' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-size: contain;
+    }
+    .plan-cta { width: 100%; text-align: center; justify-content: center; }
+
+    /* ====================== LGPD ====================== */
+    #lgpd { padding: 64px 0; }
+    .lgpd-inner {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 48px; display: grid;
+      grid-template-columns: auto 1fr; gap: 40px; align-items: center;
+    }
+    @media (max-width: 768px) { .lgpd-inner { grid-template-columns: 1fr; } }
+    .lgpd-icon {
+      width: 72px; height: 72px; border-radius: 18px;
+      background: var(--green-dim); border: 1px solid rgba(0,200,150,0.2);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .lgpd-title { font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 20px; }
+    .lgpd-items { display: flex; flex-direction: column; gap: 10px; }
+    .lgpd-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--gray-light);
+    }
+    .lgpd-check { color: var(--green); font-weight: 700; flex-shrink: 0; font-size: 16px; }
+
+    /* ====================== FOOTER ====================== */
+    footer {
+      background: var(--navy-deep); border-top: 1px solid var(--border);
+      padding: 56px 0 36px;
+    }
+    .footer-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 48px; flex-wrap: wrap; gap: 32px;
+    }
+    .footer-brand { max-width: 300px; }
+    .footer-desc { font-size: 13px; color: var(--gray); margin-top: 14px; line-height: 1.65; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links-title { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); margin-bottom: 4px; }
+    .footer-links a { font-size: 14px; color: var(--gray-light); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--green); }
+    .footer-bottom {
+      border-top: 1px solid var(--border); padding-top: 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 12px; color: var(--gray); }
+    .footer-powered { font-size: 11px; color: var(--gray); opacity: 0.7; }
+
+    /* ====================== SCROLL ANIMATIONS ====================== */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up-delay-1 { transition-delay: 0.1s; }
+    .fade-up-delay-2 { transition-delay: 0.2s; }
+    .fade-up-delay-3 { transition-delay: 0.3s; }
+  </style>
+</head>
+<body>
+
+  <!-- =================== NAV =================== -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo">
+        <!-- Logo inline SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 60" width="210" height="42" aria-label="Verifiq by Dini Inc.">
+          <g transform="translate(2, 9)">
+            <!-- Lines behind nodes -->
+            <line x1="6" y1="26" x2="19" y2="39" stroke="#00C896" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="19" y1="39" x2="42" y2="8" stroke="#00C896" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Nodes — mesma linguagem do logo DINI -->
+            <circle cx="6"  cy="26" r="4" fill="#00C896"/>
+            <circle cx="19" cy="39" r="4" fill="#00C896"/>
+            <circle cx="42" cy="8"  r="4" fill="#00C896"/>
+          </g>
+          <text x="60" y="36" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="3" fill="#FFFFFF">VERIFIQ</text>
+          <text x="61" y="52" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="400" font-size="9.5" letter-spacing="0.5" fill="#8A9BB5">by Dini Inc.</text>
+        </svg>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#produtos">Produtos</a></li>
+        <li><a href="#como-funciona">Como Funciona</a></li>
+        <li><a href="#precos">Preços</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#precos" class="btn btn-outline btn-sm">Entrar</a>
+        <a href="#precos" class="btn btn-green btn-sm">Começar Grátis</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =================== HERO =================== -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="fade-up fade-up-delay-1">Conheça seu cliente<br/>antes de decidir.</h1>
+        <p class="hero-sub fade-up fade-up-delay-2">
+          Proteja sua operação com a inteligência de dados mais completa do Brasil. Valide cadastros, localize contatos e reduza fraudes via API em milissegundos. Sem contrato. Sem burocracia. Integração em 15 minutos.
+        </p>
+        <div class="hero-ctas fade-up fade-up-delay-3">
+          <a href="#produtos" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,4 13,8 9,12"/><polyline points="3,4 7,8 3,12"/></svg>
+            Ver Produtos
+          </a>
+          <a href="#precos" class="btn btn-green">
+            Testar Grátis
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6,4 10,8 6,12"/></svg>
+          </a>
+        </div>
+        <div class="hero-trust fade-up">
+          <span>Proteção contra fraude</span>
+          <span class="hero-trust-sep"></span>
+          <span>Decisão em tempo real</span>
+          <span class="hero-trust-sep"></span>
+          <span>Infraestrutura DINI Inc.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== PRODUTOS =================== -->
+  <section class="section" id="produtos">
+    <div class="container">
+      <div class="fade-up">
+        <div class="section-label">Produtos</div>
+        <h2 class="section-title">Decisão certa.<br/>No momento certo.</h2>
+        <p class="section-sub">Três endpoints que protegem sua operação — do onboarding ao pós-venda. Tudo em uma chamada.</p>
+      </div>
+      <div class="products-grid">
+        <!-- Localize -->
+        <div class="product-card fade-up">
+          <div class="product-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+          </div>
+          <div class="product-name">Localize</div>
+          <div class="product-title">Valide quem é seu cliente</div>
+          <p class="product-desc">CPF → nome, data de nascimento, endereços, telefones, e-mails e veículos. Confirme a identidade antes de aprovar qualquer operação.</p>
+          <div class="product-price">A partir de R$ 0,50/consulta</div>
+        </div>
+        <!-- WhatsApp Check -->
+        <div class="product-card fade-up fade-up-delay-1">
+          <div class="product-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              <polyline points="9,11 12,14 16,9"/>
+            </svg>
+          </div>
+          <div class="product-name">WhatsApp Check</div>
+          <div class="product-title">Alcance quem realmente existe</div>
+          <p class="product-desc">Verifique se um número está ativo na base cadastral antes de disparar campanhas. Reduza custo de contato, aumente taxa de entrega.</p>
+          <div class="product-price">A partir de R$ 0,15/consulta</div>
+        </div>
+        <!-- Enrich -->
+        <div class="product-card fade-up fade-up-delay-2">
+          <div class="product-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+            </svg>
+          </div>
+          <div class="product-name">Enrich</div>
+          <div class="product-title">Sua base, sem lacunas</div>
+          <p class="product-desc">Envie até 100 CPFs e receba cadastros completos em uma chamada. Higienize seu CRM, atualize contatos desatualizados e elimine gaps de dados.</p>
+          <div class="product-price">A partir de R$ 0,30/CPF</div>
+        </div>
+        <!-- Localize PJ -->
+        <div class="product-card fade-up">
+          <div class="product-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2"/>
+              <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+              <line x1="12" y1="12" x2="12" y2="16"/>
+              <line x1="10" y1="14" x2="14" y2="14"/>
+            </svg>
+          </div>
+          <div class="product-name">Localize PJ</div>
+          <div class="product-title">Conheça a empresa por trás do CNPJ</div>
+          <p class="product-desc">Razão social, situação cadastral, sócios, endereço, telefone e atividade. Valide parceiros, fornecedores e clientes PJ antes de fechar negócio.</p>
+          <div class="product-price">A partir de R$ 0,30/consulta</div>
+        </div>
+        <!-- Veículo -->
+        <div class="product-card fade-up fade-up-delay-1">
+          <div class="product-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13" rx="2"/>
+              <path d="M16 8h4l3 5v3h-7V8z"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <div class="product-name">Veículo</div>
+          <div class="product-title">Veículos vinculados a um CPF</div>
+          <p class="product-desc">Consulte quais veículos estão associados a uma pessoa física. Útil para seguradoras, financeiras e operações de crédito com garantia.</p>
+          <div class="product-price">A partir de R$ 0,20/consulta</div>
+        </div>
+        <!-- Score de Credito -->
+        <div class="product-card fade-up fade-up-delay-2">
+          <div class="product-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <div class="product-name">Score de Crédito</div>
+          <div class="product-title">Capacidade de pagamento real</div>
+          <p class="product-desc">Score 0-1000 baseado em emprego formal, renda INSS/SIAPE, vínculos societários e estabilidade cadastral. Diferente de qualquer bureau.</p>
+          <div class="product-price">A partir de R$ 0,25/consulta</div>
+        </div>
+        <!-- Negativacao -->
+        <div class="product-card fade-up fade-up-delay-2">
+          <div class="product-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 9v2m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+            </svg>
+          </div>
+          <div class="product-name">Negativação</div>
+          <div class="product-title">Restrições e pendências</div>
+          <p class="product-desc">Verifica dívida ativa federal (PGFN), benefícios INSS suspensos e vínculos com empresas irregulares. Proteção antes de conceder crédito.</p>
+          <div class="product-price">A partir de R$ 0,20/consulta</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== COMO FUNCIONA =================== -->
+  <section class="section" id="como-funciona">
+    <div class="container">
+      <div class="fade-up" style="text-align:center;">
+        <div class="section-label">Como Funciona</div>
+        <h2 class="section-title">Da dúvida à decisão<br/>em minutos</h2>
+        <p class="section-sub" style="margin:14px auto 0;">Sem contrato para assinar. Sem espera para ativar. Da criação da conta à primeira consulta em menos de 15 minutos.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-item fade-up">
+          <div class="step-num">1</div>
+          <div class="step-title">Gere sua API Key</div>
+          <p class="step-desc">Crie sua conta e receba sua chave na hora. Sem cartão de crédito, sem contrato, sem esperar aprovação de área comercial.</p>
+        </div>
+        <div class="step-item fade-up fade-up-delay-1">
+          <div class="step-num">2</div>
+          <div class="step-title">Faça a Chamada</div>
+          <p class="step-desc">POST com CPF ou telefone, autenticado via header <code style="font-family:var(--mono);color:var(--green);font-size:12px;">X-API-Key</code>. Compatível com qualquer linguagem.</p>
+        </div>
+        <div class="step-item fade-up fade-up-delay-2">
+          <div class="step-num">3</div>
+          <div class="step-title">Decida com segurança</div>
+          <p class="step-desc">JSON completo em menos de 80ms. Dados precisos, prontos para alimentar seu sistema de decisão, score ou antifraude.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== PREÇOS =================== -->
+  <section class="section" id="precos">
+    <div class="container">
+      <div class="fade-up" style="text-align:center;">
+        <div class="section-label">Preços</div>
+        <h2 class="section-title">Sem contrato.<br/>Sem surpresa.</h2>
+        <p class="section-sub" style="margin:14px auto 0;">Preço transparente, sem asterisco e sem "fale com vendas". Comece grátis, pague só pelo que usar.</p>
+      </div>
+      <div class="pricing-grid">
+        <!-- Pay-as-you-go -->
+        <div class="plan-card fade-up">
+          <div class="plan-name">Pay-as-you-go</div>
+          <div class="plan-price">Grátis<span> para começar</span></div>
+          <p class="plan-desc">Pague apenas pelas consultas realizadas, sem mensalidade.</p>
+          <ul class="plan-features">
+            <li>Localize: R$ 0,50/consulta</li>
+            <li>WhatsApp: R$ 0,15/consulta</li>
+            <li>Enrich: R$ 0,30/CPF</li>
+            <li>Créditos iniciais gratuitos</li>
+            <li>Acesso a todos os endpoints</li>
+          </ul>
+          <a href="#" class="btn btn-outline plan-cta">Criar Conta Grátis</a>
+        </div>
+        <!-- Starter -->
+        <div class="plan-card fade-up fade-up-delay-1">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">R$ 497<span>/mês</span></div>
+          <p class="plan-desc">Para equipes em crescimento com volume previsível de consultas.</p>
+          <ul class="plan-features">
+            <li>1.000 consultas/mês inclusas</li>
+            <li>Todos os endpoints</li>
+            <li>Suporte por e-mail (48h)</li>
+            <li>Dashboard de uso em tempo real</li>
+            <li>Histórico de consultas 30 dias</li>
+          </ul>
+          <a href="#" class="btn btn-outline plan-cta">Assinar Starter</a>
+        </div>
+        <!-- Business -->
+        <div class="plan-card featured fade-up fade-up-delay-2">
+          <div class="plan-badge">Mais Popular</div>
+          <div class="plan-name">Business</div>
+          <div class="plan-price">R$ 1.497<span>/mês</span></div>
+          <p class="plan-desc">Para empresas que precisam de volume, velocidade e garantia de serviço.</p>
+          <ul class="plan-features">
+            <li>5.000 consultas/mês inclusas</li>
+            <li>Todos os endpoints</li>
+            <li>SLA 99,9% de uptime</li>
+            <li>Suporte prioritário (4h)</li>
+            <li>Webhook de resultado assíncrono</li>
+            <li>IP whitelist + segurança avançada</li>
+          </ul>
+          <a href="#" class="btn btn-green plan-cta">Assinar Business</a>
+        </div>
+      </div>
+      <!-- Enterprise note -->
+      <div class="fade-up" style="text-align:center;margin-top:40px;">
+        <p style="font-size:14px;color:var(--gray);">
+          Precisa de volume ainda maior?
+          <a href="mailto:contato@diniinc.com.br" style="color:var(--green);font-weight:600;">Fale com nosso time</a>
+          para planos Enterprise com preço por volume e SLA customizado.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== FOOTER =================== -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 60" width="180" height="38">
+            <g transform="translate(2, 9)">
+              <line x1="6" y1="26" x2="19" y2="39" stroke="#00C896" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="19" y1="39" x2="42" y2="8" stroke="#00C896" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="6"  cy="26" r="4" fill="#00C896"/>
+              <circle cx="19" cy="39" r="4" fill="#00C896"/>
+              <circle cx="42" cy="8"  r="4" fill="#00C896"/>
+            </g>
+            <text x="60" y="36" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="3" fill="#FFFFFF">VERIFIQ</text>
+            <text x="61" y="52" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="400" font-size="9.5" letter-spacing="0.5" fill="#8A9BB5">by Dini Inc.</text>
+          </svg>
+          <p class="footer-desc">Proteção, decisão e segurança para sua operação. A inteligência de dados do Brasil que funciona de verdade — rápida, acessível e sem burocracia.</p>
+        </div>
+        <div>
+          <div class="footer-links-title">Produto</div>
+          <div class="footer-links" style="margin-top:12px;">
+            <a href="#produtos">Endpoints</a>
+            <a href="#precos">Preços</a>
+            <a href="#">Status</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-links-title">Legal</div>
+          <div class="footer-links" style="margin-top:12px;">
+            <a href="#">Termos de Uso</a>
+            <a href="#">Política de Privacidade</a>
+            <a href="#">LGPD — Seus Direitos</a>
+            <a href="#">Cancelamento de Dados</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-links-title">Empresa</div>
+          <div class="footer-links" style="margin-top:12px;">
+            <a href="https://diniinc.com.br" target="_blank" rel="noopener">DINI Inc.</a>
+            <a href="#">Sobre</a>
+            <a href="mailto:contato@diniinc.com.br">Contato</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 Verifiq by Dini Inc. · Todos os direitos reservados · <a href="#" style="color:var(--gray);text-decoration:none;">LGPD</a></div>
+        <div class="footer-powered">Powered by DINI Infrastructure Technologies · DIFC, Dubai</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =================== SCRIPTS =================== -->
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Nav scroll behavior
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 20) {
+        nav.style.background = 'rgba(10,22,40,0.97)';
+      } else {
+        nav.style.background = 'rgba(10,22,40,0.85)';
+      }
+    });
+
+    // Language switcher
+    function showLang(lang) {
+      ['python','node','php'].forEach(l => {
+        const el = document.getElementById('lang-' + l);
+        if (el) el.style.display = (l === lang) ? 'block' : 'none';
+      });
+      document.querySelectorAll('.lang-pill').forEach(btn => {
+        const isActive = btn.dataset.lang === lang;
+        btn.style.background = isActive ? 'var(--green-dim)' : 'transparent';
+        btn.style.color = isActive ? 'var(--green)' : 'var(--gray)';
+        btn.style.borderColor = isActive ? 'var(--border-bright)' : 'var(--border)';
+        btn.style.fontWeight = isActive ? '600' : '500';
+      });
+    }
+
+    // Copy code
+    function copyCode(id, btn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copiado!';
+        btn.style.color = 'var(--green)';
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.style.color = '';
+        }, 2000);
+      });
+    }
+
+    // Trigger initial visible for above-fold elements
+    document.querySelectorAll('#hero .fade-up').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 120);
+    });
+  </script>
+</body>
+</html>
