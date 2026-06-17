@@ -36,19 +36,19 @@ SLUGS = {
     "Shenron": ("dragon-ball-z-shenron", "shenron"),
     "Nappa": ("dragon-ball-z-nappa", "nappa"),
 }
-# animecoloringpages (URL direta de imagem)
+# animecoloringpages (URL direta de imagem) - tracos bem fortes
 ANIME_CP = {
     "Mestre_Kaio": "https://animecoloringpages.com/wp-content/uploads/2023/03/King-Kai-Dragon-Ball-Z.jpg",
+    "Bardock": "https://animecoloringpages.com/wp-content/uploads/2021/10/bardock-3.jpg",
+    "Mr_Satan": "https://animecoloringpages.com/wp-content/uploads/2021/10/mr.-satan-from-dragon-ball-z.jpg",
+    "Dabura": "https://animecoloringpages.com/wp-content/uploads/2021/10/dabura-1.jpg",
 }
 # bouinbouin: colecao numerada. Usada para quem o coloringlib nao tem
 # (Bardock, Mr. Satan) ou rotula errado (Bulma -> era a Pan no coloringlib).
 # As imagens "n" trazem uma faixa de marca-dagua no rodape, que recortamos.
 BOUIN = {
     "Bulma": "1710-dragon-ball-bulma",
-    "Bardock": "1709-dragon-ball-bardock",
-    "Mr. Satan": "1688-dragon-ball-mr-satan",
     "Goku_Crianca": "1707-dragon-ball-young-son-goku",
-    "Dabura": "1706-dragon-ball-dabura",
 }
 BOUIN_URL = "https://bouinbouin.com/images/coloring/dragon-ball/n/{}-coloring-page.jpg"
 IMG = re.compile(r'https://coloringlib\.com/wp-content/uploads/[^" ]*?-coloring\.(?:jpg|png|jpeg)')
