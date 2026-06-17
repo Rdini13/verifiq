@@ -8,3 +8,5 @@ __pycache__/
 
 anime/
 resolved.json
+out_png/
+*.log
