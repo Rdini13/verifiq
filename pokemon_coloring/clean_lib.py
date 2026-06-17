@@ -204,3 +204,35 @@ def build_page(src_path, title, subtitle=""):
     draw.rectangle([rx - 4, ry - 4, rx + rw + 3, ry + rh + 3], outline=(180, 180, 180), width=2)
     page.paste(ref, (rx, ry))
     return page
+
+
+def ink_lineart(src_path, long_side=1000, blur=6, delta=22, dark=55,
+                despeckle_min=25, thickness=1):
+    """Extrai as LINHAS DE TINTA originais de uma arte oficial (cel-shaded).
+
+    Em vez de detectar fronteiras de regioes, isola os tracos pretos do
+    desenho com um limiar adaptativo (pixel bem mais escuro que a vizinhanca),
+    ignorando o sombreado suave. Funciona muito melhor que o region-trace em
+    artes de jogo limpas (Budokai Tenkaichi, Dokkan), como os Dragoes de GT.
+    """
+    rgba = cutout(src_path, long_side=long_side)
+    bg = Image.new("RGBA", rgba.size, (255, 255, 255, 255))
+    comp = Image.alpha_composite(bg, rgba).convert("RGB")
+    gray = np.asarray(comp.convert("L")).astype(np.float32)
+    mask = _clean_mask(rgba.split()[-1])
+
+    blurred = np.asarray(
+        Image.fromarray(gray.astype(np.uint8)).filter(ImageFilter.GaussianBlur(blur))
+    ).astype(np.float32)
+    ink = ((gray < blurred - delta) | (gray < dark)) & mask
+
+    sil = ndimage.binary_dilation(mask, iterations=1) & ~ndimage.binary_erosion(mask, iterations=2)
+    line = ndimage.binary_dilation(ink | sil, iterations=thickness)
+
+    lbl, n = ndimage.label(line)
+    if n:
+        sizes = ndimage.sum(np.ones_like(lbl), lbl, range(1, n + 1))
+        keep = np.zeros(n + 1, dtype=bool)
+        keep[1:] = sizes >= despeckle_min
+        line = keep[lbl]
+    return Image.fromarray(np.where(line, 0, 255).astype(np.uint8))

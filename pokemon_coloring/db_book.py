@@ -46,6 +46,10 @@ CURATED = [
     ("Shenron", "Shenron_A", "Dragao de Dragon Ball"),
     ("Shenron", "Shenron_B", "Dragao de Dragon Ball"),
     ("Shenron", "Shenron_C", "Dragao de Dragon Ball"),
+    # --- Dragoes das Sombras (GT) - tracado proprio da arte oficial ---
+    ("Omega Shenron", "Omega_Shenron", "Dragon Ball GT • Dragao"),
+    ("Syn Shenron", "Syn_Shenron", "Dragon Ball GT • Dragao"),
+    ("Nuova Shenron", "Nuova_Shenron", "Dragon Ball GT • Dragao"),
 ]
 
 
