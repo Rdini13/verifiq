@@ -30,7 +30,6 @@ CURATED = [
     ("Goku Crianca", "Goku_Crianca", "Dragon Ball / Daima"),
     ("Vegeta", "Vegeta", "Dragon Ball Z • Sayajin"),
     ("Gohan", "Gohan", "Dragon Ball Z • Sayajin"),
-    ("Goten", "Goten", "Dragon Ball Z • Sayajin"),
     ("Trunks", "Trunks", "Dragon Ball Z • Sayajin"),
     ("Bardock", "Bardock", "Dragon Ball Z • Sayajin"),
     ("Nappa", "Nappa", "Dragon Ball Z • Sayajin"),
@@ -42,8 +41,13 @@ CURATED = [
     ("Dabura", "Dabura", "Dragon Ball Z • Vilao"),
     ("Androide 17", "Android_17", "Dragon Ball Z • Vilao"),
     ("Androide 18", "Android_18", "Dragon Ball Z • Vilao"),
-    # --- GT ---
-    ("Shenron", "Shenron", "Dragon Ball"),
+    # --- Dragoes (Shenron) ---
+    ("Shenron", "Shenron", "Dragao de Dragon Ball"),
+    ("Shenron", "Shenron_A", "Dragao de Dragon Ball"),
+    ("Shenron", "Shenron_B", "Dragao de Dragon Ball"),
+    ("Shenron", "Shenron_C", "Dragao de Dragon Ball"),
+    ("Shenron", "Shenron_D", "Dragao de Dragon Ball"),
+    ("Shenron", "Shenron_E", "Dragao de Dragon Ball"),
 ]
 
 
