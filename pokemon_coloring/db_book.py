@@ -50,6 +50,11 @@ CURATED = [
     ("Omega Shenron", "Omega_Shenron", "Dragon Ball GT • Dragao"),
     ("Syn Shenron", "Syn_Shenron", "Dragon Ball GT • Dragao"),
     ("Nuova Shenron", "Nuova_Shenron", "Dragon Ball GT • Dragao"),
+    ("Eis Shenron", "Eis_Shenron", "Dragon Ball GT • Dragao"),
+    ("Haze Shenron", "Haze_Shenron", "Dragon Ball GT • Dragao"),
+    ("Rage Shenron", "Rage_Shenron", "Dragon Ball GT • Dragao"),
+    ("Oceanus Shenron", "Oceanus_Shenron", "Dragon Ball GT • Dragao"),
+    ("Naturon Shenron", "Naturon_Shenron", "Dragon Ball GT • Dragao"),
 ]
 
 

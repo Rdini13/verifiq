@@ -14,6 +14,8 @@ import urllib.request
 import numpy as np
 from PIL import Image
 from scipy import ndimage
+import urllib.parse
+import json
 import clean_lib as C
 import upgrade
 
@@ -23,10 +25,32 @@ OUT = os.path.join(BASE, "db_line")
 os.makedirs(SRC, exist_ok=True)
 UA = {"User-Agent": "coloring/1.0"}
 
-# os 3 com arte oficial limpa o suficiente para um bom tracado
+# 3 com arte oficial limpa na wiki principal (Budokai Tenkaichi / BT3)
 GOOD = [("Omega Shenron", "Omega", "Omega_Shenron"),
         ("Syn Shenron", "Syn", "Syn_Shenron"),
         ("Nuova Shenron", "Nuova", "Nuova_Shenron")]
+
+# os outros 5 so existem como screenshot na wiki principal; a arte HD limpa
+# vem da wiki do Dokkan Battle (Card <id> artwork.png, render do personagem)
+DOKKAN = {
+    "Eis_Shenron": "Card 1006350 artwork.png",
+    "Haze_Shenron": "Card 1006340 artwork.png",
+    "Rage_Shenron": "Card 1006370 artwork.png",
+    "Oceanus_Shenron": "Card 1006380 artwork.png",
+    "Naturon_Shenron": "Card 1006400 artwork.png",
+}
+DOKKAN_WIKI = "dbz-dokkanbattle.fandom.com"
+
+
+def dokkan_url(filetitle):
+    p = urllib.parse.urlencode({"action": "query", "titles": "File:" + filetitle,
+                                "prop": "imageinfo", "iiprop": "url", "format": "json"})
+    d = json.load(urllib.request.urlopen(
+        urllib.request.Request(f"https://{DOKKAN_WIKI}/api.php?{p}", headers=UA), timeout=20))
+    for _, pg in d.get("query", {}).get("pages", {}).items():
+        ii = pg.get("imageinfo")
+        if ii:
+            return ii[0]["url"]
 
 KW = {"artwork": 6, "tenkaichi": 5, "dokkan": 4, "render": 3, "profile": 3, "legends": 3}
 BAD = ["ep.", " vs", "and ", "&", "screenshot", "mission", "trailer", "saga ",
@@ -58,11 +82,27 @@ def main():
             if not raw:
                 print(f"  {name}: sem arte"); continue
             open(src, "wb").write(raw)
-        line = C.ink_lineart(src)
-        # engrossa levemente para um traco mais firme
-        a = ndimage.binary_dilation(np.asarray(line.convert("L")) < 128, iterations=1)
-        Image.fromarray(np.where(a, 0, 255).astype(np.uint8)).save(os.path.join(OUT, name + ".png"))
-        print(f"  {name}: ok")
+        _trace_save(src, name)
+
+    for name, filetitle in DOKKAN.items():
+        src = os.path.join(SRC, name.replace("_Shenron", "") + ".png")
+        if not os.path.exists(src):
+            u = dokkan_url(filetitle)
+            if not u:
+                print(f"  {name}: sem arte dokkan"); continue
+            open(src, "wb").write(urllib.request.urlopen(
+                urllib.request.Request(u, headers=UA), timeout=30).read())
+        # a propria arte colorida do Dokkan vira a referencia colorida
+        Image.open(src).convert("RGBA").save(
+            os.path.join(BASE, "anime", "src", "dragonball_" + name + ".png"))
+        _trace_save(src, name)
+
+
+def _trace_save(src, name):
+    line = C.ink_lineart(src)
+    a = ndimage.binary_dilation(np.asarray(line.convert("L")) < 128, iterations=1)
+    Image.fromarray(np.where(a, 0, 255).astype(np.uint8)).save(os.path.join(OUT, name + ".png"))
+    print(f"  {name}: ok")
 
 
 if __name__ == "__main__":
