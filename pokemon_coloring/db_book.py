@@ -1,8 +1,6 @@
-"""Monta o livro de colorir de Dragon Ball com line art REAL (db_line/)
-+ referencia colorida (render do wiki em anime/src)."""
+"""Monta o livro de colorir de Dragon Ball (selecao curada por saga) com
+line art REAL (db_line/) + referencia colorida (anime/src)."""
 import os
-import glob
-import json
 import img2pdf
 from PIL import Image, ImageDraw, ImageFont
 
@@ -11,12 +9,42 @@ LINE = os.path.join(BASE, "db_line")
 SRC = os.path.join(BASE, "anime", "src")
 PG = os.path.join(BASE, "db_pages")
 os.makedirs(PG, exist_ok=True)
-resolved = json.load(open(os.path.join(BASE, "resolved.json")))
 
 PAGE_W, PAGE_H = 1240, 1754
 F_TITLE = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 66)
-F_SUB = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 38)
+F_SUB = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 36)
 F_LABEL = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 32)
+
+# (nome exibido, arquivo em db_line, legenda da saga)
+CURATED = [
+    # --- Dragon Ball (classico) ---
+    ("Goku", "Goku", "Dragon Ball"),
+    ("Bulma", "Bulma", "Dragon Ball"),
+    ("Kuririn", "Krillin", "Dragon Ball"),
+    ("Mestre Kame", "Master_Roshi", "Dragon Ball"),
+    ("Yamcha", "Yamcha", "Dragon Ball"),
+    ("Tenshinhan", "Tien_Shinhan", "Dragon Ball"),
+    ("Mestre Kaio", "Mestre_Kaio", "Dragon Ball Z"),
+    ("Piccolo", "Piccolo", "Dragon Ball Z"),
+    # --- Sayajins ---
+    ("Goku Crianca", "Goku_Crianca", "Dragon Ball / Daima"),
+    ("Vegeta", "Vegeta", "Dragon Ball Z • Sayajin"),
+    ("Gohan", "Gohan", "Dragon Ball Z • Sayajin"),
+    ("Goten", "Goten", "Dragon Ball Z • Sayajin"),
+    ("Trunks", "Trunks", "Dragon Ball Z • Sayajin"),
+    ("Bardock", "Bardock", "Dragon Ball Z • Sayajin"),
+    ("Nappa", "Nappa", "Dragon Ball Z • Sayajin"),
+    ("Broly", "Broly", "Dragon Ball Z • Sayajin"),
+    # --- Viloes de DBZ ---
+    ("Freeza", "Frieza", "Dragon Ball Z • Vilao"),
+    ("Cell", "Cell", "Dragon Ball Z • Vilao"),
+    ("Majin Boo", "Majin_Buu", "Dragon Ball Z • Vilao"),
+    ("Dabura", "Dabura", "Dragon Ball Z • Vilao"),
+    ("Androide 17", "Android_17", "Dragon Ball Z • Vilao"),
+    ("Androide 18", "Android_18", "Dragon Ball Z • Vilao"),
+    # --- GT ---
+    ("Shenron", "Shenron", "Dragon Ball"),
+]
 
 
 def white_bg(im):
@@ -25,29 +53,21 @@ def white_bg(im):
     return Image.alpha_composite(bg, im).convert("RGB")
 
 
-def fname(name):
-    return name.replace(" ", "_").replace(".", "")
-
-
-def page(name):
+def page(display, line_file, subtitle):
     p = Image.new("RGB", (PAGE_W, PAGE_H), "white")
     d = ImageDraw.Draw(p)
-    tb = d.textbbox((0, 0), name, font=F_TITLE)
-    d.text(((PAGE_W - (tb[2] - tb[0])) / 2, 56), name, fill="black", font=F_TITLE)
-    sub = "Dragon Ball"
-    sb = d.textbbox((0, 0), sub, font=F_SUB)
-    d.text(((PAGE_W - (sb[2] - sb[0])) / 2, 138), sub, fill=(110, 110, 110), font=F_SUB)
+    tb = d.textbbox((0, 0), display, font=F_TITLE)
+    d.text(((PAGE_W - (tb[2] - tb[0])) / 2, 56), display, fill="black", font=F_TITLE)
+    sb = d.textbbox((0, 0), subtitle, font=F_SUB)
+    d.text(((PAGE_W - (sb[2] - sb[0])) / 2, 140), subtitle, fill=(110, 110, 110), font=F_SUB)
 
-    line = white_bg(Image.open(os.path.join(LINE, fname(name) + ".png")))
+    line = white_bg(Image.open(os.path.join(LINE, line_file + ".png")))
     box_w, box_h = 1080, 1080
     s = min(box_w / line.width, box_h / line.height)
     line = line.resize((int(line.width * s), int(line.height * s)), Image.LANCZOS)
     p.paste(line, ((PAGE_W - line.width) // 2, 210 + (box_h - line.height) // 2))
 
-    # referencia colorida (se houver render do wiki)
-    ref_path = os.path.join(SRC, "dragonball_" + fname(name).replace("_", "_") + ".png")
-    ref_path2 = os.path.join(SRC, "dragonball_" + name.replace(" ", "_").replace("/", "_") + ".png")
-    rp = ref_path2 if os.path.exists(ref_path2) else ref_path
+    rp = os.path.join(SRC, "dragonball_" + line_file + ".png")
     if os.path.exists(rp):
         d.line([(120, 1340), (PAGE_W - 120, 1340)], fill=(205, 205, 205), width=2)
         lbl = "Referencia (colorido)"
@@ -63,11 +83,15 @@ def page(name):
 
 
 def main():
-    order = [n for n in resolved["dragonball"] if os.path.exists(os.path.join(LINE, fname(n) + ".png"))]
-    for name in order:
-        page(name).save(os.path.join(PG, fname(name) + ".jpg"), "JPEG", quality=90, optimize=True)
-        print("  ", name)
-    pages = [os.path.join(PG, fname(n) + ".jpg") for n in order]
+    pages = []
+    for display, line_file, subtitle in CURATED:
+        if not os.path.exists(os.path.join(LINE, line_file + ".png")):
+            print("  FALTA:", display)
+            continue
+        out = os.path.join(PG, line_file + ".jpg")
+        page(display, line_file, subtitle).save(out, "JPEG", quality=90, optimize=True)
+        pages.append(out)
+        print("  ", display)
     A4 = img2pdf.get_layout_fun((img2pdf.in_to_pt(8.27), img2pdf.in_to_pt(11.69)))
     out = os.path.join(BASE, "DragonBall_para_colorir.pdf")
     with open(out, "wb") as f:

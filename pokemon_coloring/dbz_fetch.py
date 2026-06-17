@@ -34,6 +34,11 @@ SLUGS = {
     "Beerus": ("beerus-from-dragon-ball", "beerus"),
     "Videl": ("dragon-ball-z-videl", "videl"),
     "Shenron": ("dragon-ball-z-shenron", "shenron"),
+    "Nappa": ("dragon-ball-z-nappa", "nappa"),
+}
+# animecoloringpages (URL direta de imagem)
+ANIME_CP = {
+    "Mestre_Kaio": "https://animecoloringpages.com/wp-content/uploads/2023/03/King-Kai-Dragon-Ball-Z.jpg",
 }
 # bouinbouin: colecao numerada. Usada para quem o coloringlib nao tem
 # (Bardock, Mr. Satan) ou rotula errado (Bulma -> era a Pan no coloringlib).
@@ -42,6 +47,8 @@ BOUIN = {
     "Bulma": "1710-dragon-ball-bulma",
     "Bardock": "1709-dragon-ball-bardock",
     "Mr. Satan": "1688-dragon-ball-mr-satan",
+    "Goku_Crianca": "1707-dragon-ball-young-son-goku",
+    "Dabura": "1706-dragon-ball-dabura",
 }
 BOUIN_URL = "https://bouinbouin.com/images/coloring/dragon-ball/n/{}-coloring-page.jpg"
 IMG = re.compile(r'https://coloringlib\.com/wp-content/uploads/[^" ]*?-coloring\.(?:jpg|png|jpeg)')
@@ -125,6 +132,19 @@ def main():
         except Exception as e:
             missing.append(name)
             print(f"  {name:16s} -> ERRO bouinbouin {e}")
+    for name, url in ANIME_CP.items():
+        try:
+            from PIL import Image
+            import io
+            data = urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read()
+            Image.open(io.BytesIO(data)).convert("RGB").save(
+                os.path.join(OUT, name.replace(" ", "_").replace(".", "") + ".png"))
+            ok.append(name)
+            print(f"  {name:16s} ok (animecoloringpages)")
+        except Exception as e:
+            missing.append(name)
+            print(f"  {name:16s} -> ERRO {e}")
+
     print(f"\nOK: {len(ok)} | Sem fonte: {missing}")
     json.dump({"ok": ok, "missing": missing}, open(os.path.join(BASE, "db_status.json"), "w"), indent=2)
 
