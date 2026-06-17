@@ -1,14 +1,21 @@
-# Artefatos gerados (pesados) - reproduziveis com build.py
-art/
-pages/
-test/
-*.pdf
-__pycache__/
-*.pyc
 
-anime/
-resolved.json
-out_png/
+# Artefatos gerados (pesados) - reproduziveis com build.py
+*.html
 *.log
+*.pdf
+*.pyc
+__pycache__/
+anime/
+art/
 out_jpg/
 out_lite/
+out_png/
+pages/
+pikachu.html
+resolved.json
+sc_*.png
+sc_line/
+sc_missing.json
+sc_pages/
+sc_urls.txt
+test/
