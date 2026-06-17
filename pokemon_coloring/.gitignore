@@ -7,6 +7,12 @@
 __pycache__/
 anime/
 art/
+bb_*.txt
+db_line/
+db_pages/
+db_status.json
+db_test/
+dbz_pages.txt
 out_jpg/
 out_lite/
 out_png/
@@ -19,4 +25,5 @@ sc_line/
 sc_missing.json
 sc_pages/
 sc_urls.txt
+t.jpg
 test/
