@@ -236,3 +236,34 @@ def ink_lineart(src_path, long_side=1000, blur=6, delta=22, dark=55,
         keep[1:] = sizes >= despeckle_min
         line = keep[lbl]
     return Image.fromarray(np.where(line, 0, 255).astype(np.uint8))
+
+
+def ink_outline(src_path, long_side=1100, blur=4, delta=16, thickness=2,
+                despeckle_min=24):
+    """Como ink_lineart, mas gera apenas CONTORNOS (sem preencher areas
+    escuras de preto) - ideal para colorir. Usa so o limiar adaptativo
+    (pixel mais escuro que a vizinhanca), entao regioes uniformemente
+    escuras viram contorno em vez de mancha preta solida.
+    """
+    rgba = cutout(src_path, long_side=long_side)
+    bg = Image.new("RGBA", rgba.size, (255, 255, 255, 255))
+    comp = Image.alpha_composite(bg, rgba).convert("RGB")
+    gray = np.asarray(comp.convert("L")).astype(np.float32)
+    mask = _clean_mask(rgba.split()[-1])
+
+    blurred = np.asarray(
+        Image.fromarray(gray.astype(np.uint8)).filter(ImageFilter.GaussianBlur(blur))
+    ).astype(np.float32)
+    ink = (gray < blurred - delta) & mask          # so contorno, nao preenche
+
+    sil = ndimage.binary_dilation(mask, iterations=1) & ~ndimage.binary_erosion(mask, iterations=2)
+    line = ndimage.binary_closing(ink | sil, iterations=1)
+    line = ndimage.binary_dilation(line, iterations=thickness)
+
+    lbl, n = ndimage.label(line)
+    if n:
+        sizes = ndimage.sum(np.ones_like(lbl), lbl, range(1, n + 1))
+        keep = np.zeros(n + 1, dtype=bool)
+        keep[1:] = sizes >= despeckle_min
+        line = keep[lbl]
+    return Image.fromarray(np.where(line, 0, 255).astype(np.uint8))

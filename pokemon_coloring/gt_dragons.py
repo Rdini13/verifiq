@@ -99,9 +99,8 @@ def main():
 
 
 def _trace_save(src, name):
-    line = C.ink_lineart(src)
-    a = ndimage.binary_dilation(np.asarray(line.convert("L")) < 128, iterations=1)
-    Image.fromarray(np.where(a, 0, 255).astype(np.uint8)).save(os.path.join(OUT, name + ".png"))
+    # modo contorno (sem preencher escuro) -> mais limpo p/ colorir
+    C.ink_outline(src).save(os.path.join(OUT, name + ".png"))
     print(f"  {name}: ok")
 
 
