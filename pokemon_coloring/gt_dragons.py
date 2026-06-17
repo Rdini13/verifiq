@@ -100,7 +100,7 @@ def main():
 
 def _trace_save(src, name):
     # modo contorno (sem preencher escuro) -> mais limpo p/ colorir
-    C.ink_outline(src).save(os.path.join(OUT, name + ".png"))
+    C.ink_outline(src, thickness=1).save(os.path.join(OUT, name + ".png"))
     print(f"  {name}: ok")
 
 
