@@ -21,7 +21,6 @@ SLUGS = {
     "Krillin": ("dragon-ball-z-krillin", "krillin"),
     "Trunks": ("dragon-ball-z-future-trunks", "trunks"),
     "Goten": ("dragon-ball-z-goten", "goten"),
-    "Bulma": ("dragon-ball-z-bulma", "bulma"),
     "Master Roshi": ("dragon-ball-z-master-roshi", "roshi"),
     "Yamcha": ("dragon-ball-z-yamcha", "yamcha"),
     "Tien Shinhan": ("dragon-ball-z-tien-shinhan", "tien"),
@@ -36,8 +35,15 @@ SLUGS = {
     "Videl": ("dragon-ball-z-videl", "videl"),
     "Shenron": ("dragon-ball-z-shenron", "shenron"),
 }
-# personagens sem pagina propria -> busca no site
-SEARCH = ["Bardock", "Whis", "Mr. Satan"]
+# bouinbouin: colecao numerada. Usada para quem o coloringlib nao tem
+# (Bardock, Mr. Satan) ou rotula errado (Bulma -> era a Pan no coloringlib).
+# As imagens "n" trazem uma faixa de marca-dagua no rodape, que recortamos.
+BOUIN = {
+    "Bulma": "1710-dragon-ball-bulma",
+    "Bardock": "1709-dragon-ball-bardock",
+    "Mr. Satan": "1688-dragon-ball-mr-satan",
+}
+BOUIN_URL = "https://bouinbouin.com/images/coloring/dragon-ball/n/{}-coloring-page.jpg"
 IMG = re.compile(r'https://coloringlib\.com/wp-content/uploads/[^" ]*?-coloring\.(?:jpg|png|jpeg)')
 
 
@@ -105,15 +111,20 @@ def main():
             missing.append(name)
             print(f"  {name:16s} -> ERRO {e}")
         time.sleep(0.2)
-    for name in SEARCH:
-        u = search_char(name)
-        if u:
-            download(name, u)
+    for name, idslug in BOUIN.items():
+        try:
+            data = urllib.request.urlopen(
+                urllib.request.Request(BOUIN_URL.format(idslug), headers=UA), timeout=30).read()
+            from PIL import Image
+            import io
+            im = Image.open(io.BytesIO(data)).convert("RGB")
+            im = im.crop((0, 0, im.width, im.height - 44))  # remove marca-dagua do rodape
+            im.save(os.path.join(OUT, name.replace(" ", "_").replace(".", "") + ".png"))
             ok.append(name)
-            print(f"  {name:16s} ok (busca)  {u.split('/')[-1]}")
-        else:
+            print(f"  {name:16s} ok (bouinbouin)")
+        except Exception as e:
             missing.append(name)
-            print(f"  {name:16s} -> sem imagem (busca)")
+            print(f"  {name:16s} -> ERRO bouinbouin {e}")
     print(f"\nOK: {len(ok)} | Sem fonte: {missing}")
     json.dump({"ok": ok, "missing": missing}, open(os.path.join(BASE, "db_status.json"), "w"), indent=2)
 
