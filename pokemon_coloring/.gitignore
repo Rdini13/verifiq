@@ -1,0 +1,5 @@
+# Artefatos gerados (pesados) - reproduziveis com build.py
+art/
+pages/
+test/
+*.pdf
