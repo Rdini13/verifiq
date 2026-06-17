@@ -46,8 +46,6 @@ CURATED = [
     ("Shenron", "Shenron_A", "Dragao de Dragon Ball"),
     ("Shenron", "Shenron_B", "Dragao de Dragon Ball"),
     ("Shenron", "Shenron_C", "Dragao de Dragon Ball"),
-    ("Shenron", "Shenron_D", "Dragao de Dragon Ball"),
-    ("Shenron", "Shenron_E", "Dragao de Dragon Ball"),
 ]
 
 
