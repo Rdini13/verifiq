@@ -3,3 +3,5 @@ art/
 pages/
 test/
 *.pdf
+__pycache__/
+*.pyc
