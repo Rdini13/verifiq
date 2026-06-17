@@ -26,6 +26,13 @@ def slugify(name):
     return s
 
 
+# Pokemon ausentes do conjunto numerado do supercoloring -> fonte alternativa
+# (URL direta de uma pagina de colorir limpa e correta)
+OVERRIDES = {
+    80: "https://coloriez-les-tous.s3.eu-west-3.amazonaws.com/coloring/slowbro/slowbro-002.jpg",
+}
+
+
 def find_md(name, dex):
     slug = slugify(name)
     # 1) pagina individual <slug>-pokemon
@@ -67,6 +74,17 @@ def main():
         if os.path.exists(dst) and os.path.getsize(dst) > 3000:
             resolved[dex] = name
             continue
+        if dex in OVERRIDES:
+            try:
+                req = urllib.request.Request(OVERRIDES[dex], headers={"User-Agent": UA})
+                from PIL import Image
+                import io
+                Image.open(io.BytesIO(urllib.request.urlopen(req, timeout=30).read())).convert("RGB").save(dst)
+                resolved[dex] = name
+                print(f"  {dex:3d} {name:14s} ok (override)")
+                continue
+            except Exception as e:
+                print(f"  {dex:3d} {name:14s} override FAIL {e}")
         md = find_md(name, dex)
         if not md:
             missing.append((dex, name))
