@@ -30,6 +30,8 @@ def slugify(name):
 # (URL direta de uma pagina de colorir limpa e correta)
 OVERRIDES = {
     80: "https://coloriez-les-tous.s3.eu-west-3.amazonaws.com/coloring/slowbro/slowbro-002.jpg",
+    # #130: a pagina tem Gyarados normal E Mega Gyarados; fixa o normal
+    130: "https://cdn.supercoloring.com/coloring/361793/130-gyarados-coloring-page-original.png",
 }
 
 
