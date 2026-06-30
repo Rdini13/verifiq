@@ -1,0 +1,25 @@
+{
+  "dragonball": {
+    "Porunga": ["Porunga", "Porunga"],
+    "Black Smoke Shenron": ["Black Smoke Shenron", "Shenron"],
+    "Majin Buu": ["Majin Buu", "Buu"],
+    "Super Shenron": ["Super Shenron", "Shenron"],
+    "Naturon Shenron": ["Naturon Shenron", "Naturon"],
+    "Haze Shenron": ["Haze Shenron", "Haze"],
+    "Oceanus Shenron": ["Oceanus Shenron", "Oceanus"],
+    "Eis Shenron": ["Eis Shenron", "Eis"],
+    "Rage Shenron": ["Rage Shenron", "Rage"],
+    "Shenron": ["Shenron", "Shenron"]
+  },
+  "onepiece": {
+    "Shanks": ["Shanks", "Shanks"],
+    "Jinbe": ["Jinbe", "Jinbe"],
+    "Whitebeard": ["Edward Newgate", "Newgate"],
+    "Buggy": ["Buggy", "Buggy"],
+    "Sanji": ["Vinsmoke Sanji", "Sanji"]
+  },
+  "naruto": {
+    "Itachi Uchiha": ["Itachi Uchiha", "Itachi"],
+    "Jiraiya": ["Jiraiya", "Jiraiya"]
+  }
+}
