@@ -8,6 +8,7 @@ __pycache__/
 anime/
 art/
 bb_*.txt
+combo_lite/
 db_line/
 db_pages/
 db_status.json
